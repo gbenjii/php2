@@ -1,0 +1,14 @@
+html {
+    font-size: 130%;
+}
+
+body,
+html,
+.inner,
+.collapse,
+.navbar {
+    background-image: url(https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?cs=srgb&dl=pexels-pixabay-531880.jpg&fm=jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: rgba(255, 255, 255, 0.5);
+}

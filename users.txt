@@ -1,0 +1,2 @@
+benji|$2y$10$GN8mvKRc4Ug1Q1QIBWjPuOx3StmeGcfdefu7MfjnurgEnmnd8.PEm|admin,premium,felhasználó|1
+test|$2y$10$mlpKDv5tntcXJKALsVnKRuKO9W3WzGgvdyfVVDKCcgc9ehqh.zn1u|felhasználó|2
