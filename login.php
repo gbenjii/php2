@@ -5,8 +5,8 @@ $error = ""; // Hibaüzenet változó
 
 // Ha a felhasználó már be van jelentkezve, irány a megfelelő oldalra
 if (isset($_SESSION['username']) && isset($_SESSION['role']) && isset($_SESSION['user_id'])) { // ID ellenőrzése is
-    if ($_SESSION['role'] === 'admin') {
-        header('Location: admin.php');
+    if ($_SESSION['role'] === 'owner') {
+        header('Location: owner.php');
     } elseif ($_SESSION['role'] === 'premium') {
         header('Location: premium.php');
     } else {
@@ -32,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (file_exists($dataFile)) {
             $users = file($dataFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($users as $user) {
-                list($savedUsername, $savedPassword, $savedRoles, $savedId) = explode('|', $user); // ID KINYERÉSE!!!
+                list($savedUsername, $savedPassword, $savedRoles, $savedId) = explode('|', $user);
                 if ($savedUsername === $username && password_verify($password, $savedPassword)) {
                     $_SESSION['username'] = $username;
                     $roles = explode(',', $savedRoles);
-                    $priority = ['admin', 'premium', 'felhasználó'];
+                    $priority = ['owner', 'admin', 'premium', 'felhasználó'];
                     $highestRole = null;
 
                     foreach ($priority as $role) {
@@ -50,7 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['user_id'] = $savedId; // ID MENTÉSE A SESSION-BE!!!
 
                     // Átirányítás rang alapján
-                    if ($highestRole === 'admin') {
+                    if ($highestRole === 'owner') {
+                        header('Location: owner.php');
+                    } elseif ($highestRole === 'admin') { // Admin ellenőrzése
                         header('Location: admin.php');
                     } elseif ($highestRole === 'premium') {
                         header('Location: premium.php');
@@ -62,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $error = "Hibás felhasználónév vagy jelszó!"; // Hibaüzenet beállítása, ha nem talál felhasználót
         } else {
-          $error = "A felhasználói adatokat tartalmazó fájl nem található!";
+            $error = "A felhasználói adatokat tartalmazó fájl nem található!";
         }
     }
 }
@@ -70,20 +72,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bejelentkezés</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .login-form { width: 300px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;}
-        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-        .error { color: red; font-size: 14px; text-align: center; margin-bottom: 10px;} /* Hibaüzenet stílusa */
-        .register-link { text-align: center; margin-top: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .login-form {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Hibaüzenet stílusa */
+        .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="login-form">
@@ -103,4 +148,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 </body>
+
 </html>

@@ -2,7 +2,7 @@
 session_start();
 
 // Csak adminok érhetik el az oldalt
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'owner') {
     header('Location: login.php');
     exit;
 }
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" name="save">Mentés</button>
         </form>
         <br>
-        <a href="admin.php">Vissza a fájllistához</a>
+        <a href="owner.php">Vissza a főoldalhoz</a>
     </body>
     </html>
     <?php
@@ -61,7 +61,7 @@ $files = array_diff($files, array('.', '..'))
     <title>Admin oldalszerkesztő</title>
 </head>
 <body>
-    <h2>Üdv, <?php echo htmlspecialchars($_SESSION['username']); ?>! (Admin)</h2>
+    <h2>Üdv, <?php echo htmlspecialchars($_SESSION['username']); ?>! (owner)</h2>
     <p>Itt szerkesztheted az oldal PHP fájljait.</p>
     <h3>Elérhető fájlok:</h3>
     <ul>

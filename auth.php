@@ -3,13 +3,14 @@ session_start();
 
 // Rangok prioritása
 $rolePriority = [
-    'admin' => 3,
+    'owner' => 3,
     'premium' => 2,
     'felhasználó' => 1
 ];
 
 // Az oldalhoz szükséges minimum rang
-function requireRole($requiredRole) {
+function requireRole($requiredRole)
+{
     global $rolePriority;
 
     // Ha nincs bejelentkezve

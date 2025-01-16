@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Ha már történt regisztráció ebben a sessionben
 if (isset($_SESSION['registered']) && $_SESSION['registered'] === true) {
     header('Location: success.php');
     exit;
 }
 
-// Mappák ellenőrzése és létrehozása
 $profile_pics_dir = 'profile_pics';
 $default_profile_pics_dir = 'default_profile_pics';
 
@@ -26,50 +24,56 @@ if (!is_dir($default_profile_pics_dir)) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
+$errorMessage = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $users = file('users.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $errorMessage = null;
-    $newId = 1;
+    if (empty($username) || empty($password)) {
+        $errorMessage = "A felhasználónév és a jelszó megadása kötelező!";
+    } else {
+        $users = file('users.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $newId = 1;
 
-    foreach ($users as $user) {
-        $userData = explode('|', $user);
-        if (count($userData) < 4) {
-            continue;
-        }
-        list($storedUsername, $storedPassword, $storedRole, $storedId) = $userData;
+        foreach ($users as $user) {
+            $userData = explode('|', $user);
+            if (count($userData) < 4) { // Ellenőrizzük, hogy legalább 4 elem van-e username, password, role és id
+                continue;
+            }
+            list($storedUsername, $storedPassword, $storedRole, $storedId) = $userData;
 
-        if ($storedUsername === $username) {
-            $errorMessage = "A felhasználónév már létezik!";
-            break;
-        }
-        $newId = max($newId, (int)$storedId + 1);
-    }
-
-    if (!isset($errorMessage)) {
-        $role = 'felhasználó';
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $newUser = $username . '|' . $hashedPassword . '|' . $role . '|' . $newId . PHP_EOL;
-        file_put_contents('users.txt', $newUser, FILE_APPEND);
-
-        $default_profile_pic = $default_profile_pics_dir . '/default.png';
-        $profile_pic_path = $profile_pics_dir . '/' . $newId . '.png';
-        if (!copy($default_profile_pic, $profile_pic_path)) {
-            error_log("Hiba a profilkép másolásakor!");
-            $errorMessage = "Hiba történt a regisztráció során!";
+            if ($storedUsername === $username) {
+                $errorMessage = "A felhasználónév már létezik!";
+                break;
+            }
+            $newId = max($newId, (int)$storedId + 1);
         }
 
         if (!isset($errorMessage)) {
-            $_SESSION['registered'] = true;
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role;
-            $_SESSION['user_id'] = $newId; // EZ A LÉNYEG!
+            $role = 'felhasználó';
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            header('Location: success.php');
-            exit;
+            // Regisztrációs idő eltávolítva
+            $newUser = $username . '|' . $hashedPassword . '|' . $role . '|' . $newId . PHP_EOL; // Csak username, password, role, id
+            file_put_contents('users.txt', $newUser, FILE_APPEND);
+
+            $default_profile_pic = $default_profile_pics_dir . '/default.png';
+            $profile_pic_path = $profile_pics_dir . '/' . $newId . '.png';
+            if (!copy($default_profile_pic, $profile_pic_path)) {
+                error_log("Hiba a profilkép másolásakor!");
+                $errorMessage = "Hiba történt a regisztráció során!";
+            }
+
+            if (!isset($errorMessage)) {
+                $_SESSION['registered'] = true;
+                $_SESSION['username'] = $username;
+                $_SESSION['role'] = $role;
+                $_SESSION['user_id'] = $newId;
+
+                header('Location: success.php');
+                exit;
+            }
         }
     }
 }
@@ -84,11 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
     <style>
         body { font-family: Arial, sans-serif; }
         .register-form { width: 300px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;}
         button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background-color: #45a049; }
-        .error { color: red; font-size: 14px; text-align: center; }
-        .success { color: green; font-size: 14px; text-align: center; }
+        .error { color: red; font-size: 14px; text-align: center; margin-bottom: 10px;}
         .login-link { text-align: center; margin-top: 10px; }
     </style>
 </head>

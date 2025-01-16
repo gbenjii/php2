@@ -1,2 +1,1 @@
-2025-01-10 23:31:20 - benji (admin): INNENTŐL KEZDETÉT VESZI A CSEVEGÉS!!!
-2025-01-15 18:10:47 - test (felhasználó): test
+2025-01-10 23:31:20 - benji (owner): INNENTŐL KEZDETÉT VESZI A CSEVEGÉS!!!

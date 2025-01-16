@@ -2,7 +2,7 @@
 session_start();
 
 // Csak adminok érhetik el az oldalt
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'owner') {
     header('Location: login.php');
     exit;
 }
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </nav>
     <strong>
-        <h2>Üdv, <?php echo htmlspecialchars($_SESSION['username']); ?>!(Admin)</h2>
+        <h2>Üdv, <?php echo htmlspecialchars($_SESSION['username']); ?>!(owner)</h2>
     </strong>
 
 </body>
