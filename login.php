@@ -1,12 +1,14 @@
 <?php
 session_start();
 $logFile = 'login_log.txt';
-$error = ""; // Hibaüzenet változó
+$error = "";
 
-// Ha a felhasználó már be van jelentkezve, irány a megfelelő oldalra
-if (isset($_SESSION['username']) && isset($_SESSION['role']) && isset($_SESSION['user_id'])) { // ID ellenőrzése is
+if (isset($_SESSION['username']) && isset($_SESSION['role']) && isset($_SESSION['user_id'])) {
+    // Már be van jelentkezve
     if ($_SESSION['role'] === 'owner') {
         header('Location: owner.php');
+    } elseif ($_SESSION['role'] === 'admin') { // Admin ellenőrzése
+        header('Location: admin.php');
     } elseif ($_SESSION['role'] === 'premium') {
         header('Location: premium.php');
     } else {
@@ -21,16 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $dataFile = 'users.txt';
 
     if (empty($username) || empty($password)) {
-        $error = "A felhasználónév és a jelszó megadása kötelező!"; // Hibaüzenet beállítása
+        $error = "A felhasználónév és a jelszó megadása kötelező!";
     } else {
-        // Logolás
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $time = date('Y-m-d H:i:s');
-        file_put_contents($logFile, "$time - IP: $ip - Próba: $username\n", FILE_APPEND);
-
-        // Felhasználó ellenőrzése
         if (file_exists($dataFile)) {
             $users = file($dataFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $loginSuccessful = false; // Logikai változó a sikeres bejelentkezéshez
+
             foreach ($users as $user) {
                 list($savedUsername, $savedPassword, $savedRoles, $savedId) = explode('|', $user);
                 if ($savedUsername === $username && password_verify($password, $savedPassword)) {
@@ -47,12 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
 
                     $_SESSION['role'] = $highestRole;
-                    $_SESSION['user_id'] = $savedId; // ID MENTÉSE A SESSION-BE!!!
+                    $_SESSION['user_id'] = $savedId;
+                    $loginSuccessful = true; // Sikeres bejelentkezés
 
-                    // Átirányítás rang alapján
+                    // Sikeres bejelentkezés logolása
+                    $logMessage = date('Y-m-d H:i:s') . ' - Sikeres bejelentkezés:' . PHP_EOL;
+                    $logMessage .= 'Felhasználónév: ' . $username . PHP_EOL;
+                    $logMessage .= 'ID: ' . $savedId . PHP_EOL;
+                    $logMessage .= 'Böngésző: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
+                    $logMessage .= 'IP cím: ' . $_SERVER['REMOTE_ADDR'] . PHP_EOL;
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+                    // Átirányítás rang alapján (a logolás után)
                     if ($highestRole === 'owner') {
                         header('Location: owner.php');
-                    } elseif ($highestRole === 'admin') { // Admin ellenőrzése
+                    } elseif ($highestRole === 'admin') {
                         header('Location: admin.php');
                     } elseif ($highestRole === 'premium') {
                         header('Location: premium.php');
@@ -62,7 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     exit;
                 }
             }
-            $error = "Hibás felhasználónév vagy jelszó!"; // Hibaüzenet beállítása, ha nem talál felhasználót
+            if (!$loginSuccessful) { // Ha nem volt sikeres bejelentkezés
+                // Sikertelen bejelentkezési kísérlet logolása
+                $logMessage = date('Y-m-d H:i:s') . ' - Sikertelen bejelentkezési kísérlet:' . PHP_EOL;
+                $logMessage .= 'Felhasználónév: ' . $username . PHP_EOL;
+                $logMessage .= 'IP cím: ' . $_SERVER['REMOTE_ADDR'] . PHP_EOL;
+                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                $error = "Hibás felhasználónév vagy jelszó!";
+            }
         } else {
             $error = "A felhasználói adatokat tartalmazó fájl nem található!";
         }
@@ -121,7 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 10px;
         }
 
-        /* Hibaüzenet stílusa */
         .register-link {
             text-align: center;
             margin-top: 10px;

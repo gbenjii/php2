@@ -8,6 +8,7 @@ if (isset($_SESSION['registered']) && $_SESSION['registered'] === true) {
 
 $profile_pics_dir = 'profile_pics';
 $default_profile_pics_dir = 'default_profile_pics';
+$logFile = 'registersucces_log.txt'; // Logfájl neve
 
 if (!is_dir($profile_pics_dir)) {
     mkdir($profile_pics_dir, 0755, true);
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($users as $user) {
             $userData = explode('|', $user);
-            if (count($userData) < 4) { // Ellenőrizzük, hogy legalább 4 elem van-e username, password, role és id
+            if (count($userData) < 4) {
                 continue;
             }
             list($storedUsername, $storedPassword, $storedRole, $storedId) = $userData;
@@ -54,8 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $role = 'felhasználó';
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            // Regisztrációs idő eltávolítva
-            $newUser = $username . '|' . $hashedPassword . '|' . $role . '|' . $newId . PHP_EOL; // Csak username, password, role, id
+            $newUser = $username . '|' . $hashedPassword . '|' . $role . '|' . $newId . PHP_EOL;
             file_put_contents('users.txt', $newUser, FILE_APPEND);
 
             $default_profile_pic = $default_profile_pics_dir . '/default.png';
@@ -70,6 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $role;
                 $_SESSION['user_id'] = $newId;
+
+                // Logolás
+                $logMessage = date('Y-m-d H:i:s') . ' - Sikeres regisztráció:' . PHP_EOL;
+                $logMessage .= 'Felhasználónév: ' . $username . PHP_EOL;
+                $logMessage .= 'Jelszó (hash): ' . $hashedPassword . PHP_EOL; // A hashelt jelszót logoljuk!
+                $logMessage .= 'ID: ' . $newId . PHP_EOL;
+                $logMessage .= 'Böngésző: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
+                $logMessage .= 'IP cím: ' . $_SERVER['REMOTE_ADDR'] . PHP_EOL;
+                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
 
                 header('Location: success.php');
                 exit;

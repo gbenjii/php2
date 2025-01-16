@@ -124,99 +124,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile']) && 
 </head>
 <style>
     body {
-    font-family: sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4; /* Halvány szürke háttér */
-    color: #333; /* Sötétszürke szöveg */
-}
-
-.container {
-    width: 500px; /* Szélesebb konténer */
-    margin: 0 auto;
-    background-color: #fff; /* Fehér háttér a konténernek */
-    border: 1px solid #ddd; /* Világosszürke keret */
-    padding: 20px;
-    border-radius: 8px; /* Lekerekített sarkok */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Enyhe árnyék */
-}
-
-h2 {
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.error {
-    color: #a94442; /* Sötétvörös hibaüzenet */
-    background-color: #f2dede; /* Világosvörös háttér a hibaüzenetnek */
-    border: 1px solid #ebccd1; /* Vörös keret */
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.success {
-    color: #3c763d; /* Sötétzöld sikerüzenet */
-    background-color: #dff0d8; /* Világoszöld háttér a sikerüzenetnek */
-    border: 1px solid #d6e9c6; /* Zöld keret */
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold; /* Félkövér címkék */
-    color: #555;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="file"] {
-    width: calc(100% - 12px); /* Hely a paddingnek */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50; /* Zöld gomb */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Sima áttűnés */
-}
-
-button:hover {
-    background-color: #45a049; /* Sötétebb zöld hover */
-}
-
-.profile-image {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.profile-image img {
-    max-width: 150px;
-    border-radius: 50%;
-    border: 3px solid #ddd; /* Vastagabb, világosszürke keret a képnek */
-    display: block;
-    margin: 0 auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Enyhe árnyék a képnek */
-}
-
-/* Reszponzív design kisebb képernyőkre */
-@media (max-width: 600px) {
-    .container {
-        width: 90%;
+        font-family: sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        /* Halvány szürke háttér */
+        color: #333;
+        /* Sötétszürke szöveg */
     }
-}
+
+    .container {
+        width: 500px;
+        /* Szélesebb konténer */
+        margin: 0 auto;
+        background-color: #fff;
+        /* Fehér háttér a konténernek */
+        border: 1px solid #ddd;
+        /* Világosszürke keret */
+        padding: 20px;
+        border-radius: 8px;
+        /* Lekerekített sarkok */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* Enyhe árnyék */
+    }
+
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .error {
+        color: #a94442;
+        /* Sötétvörös hibaüzenet */
+        background-color: #f2dede;
+        /* Világosvörös háttér a hibaüzenetnek */
+        border: 1px solid #ebccd1;
+        /* Vörös keret */
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .success {
+        color: #3c763d;
+        /* Sötétzöld sikerüzenet */
+        background-color: #dff0d8;
+        /* Világoszöld háttér a sikerüzenetnek */
+        border: 1px solid #d6e9c6;
+        /* Zöld keret */
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        /* Félkövér címkék */
+        color: #555;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="file"] {
+        width: calc(100% - 12px);
+        /* Hely a paddingnek */
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        /* Zöld gomb */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        /* Sima áttűnés */
+    }
+
+    button:hover {
+        background-color: #45a049;
+        /* Sötétebb zöld hover */
+    }
+
+    .profile-image {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-image img {
+        max-width: 150px;
+        border-radius: 50%;
+        border: 3px solid #ddd;
+        /* Vastagabb, világosszürke keret a képnek */
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        /* Enyhe árnyék a képnek */
+    }
+
+    /* Reszponzív design kisebb képernyőkre */
+    @media (max-width: 600px) {
+        .container {
+            width: 90%;
+        }
+    }
 </style>
 
 <body>

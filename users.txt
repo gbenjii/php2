@@ -1,3 +1,2 @@
-benji|$2y$10$GN8mvKRc4Ug1Q1QIBWjPuOx3StmeGcfdefu7MfjnurgEnmnd8.PEm|owner|1
+benji|$2y$10$GN8mvKRc4Ug1Q1QIBWjPuOx3StmeGcfdefu7MfjnurgEnmnd8.PEm|owner,premium,felhasználó|1
 test|$2y$10$51yOZHL7NK2x7RR1huEHUOK.UHFhRCBmHQ8egqe17qyOjMCTImtVK|felhasználó|2
-
